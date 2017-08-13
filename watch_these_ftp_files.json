@@ -1,0 +1,12 @@
+[
+	{
+		"id": "favourite_file",
+		"path": "/Favourite_Files/cool_file.txt",
+		"text-file": true
+	},
+	{
+		"id": "binary_file",
+		"path": "word_file_text.docx",
+		"text-file": false
+	}
+]

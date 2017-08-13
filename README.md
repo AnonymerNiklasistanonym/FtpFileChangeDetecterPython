@@ -3,8 +3,9 @@ Check your FTP files on changes without even downloading them. Very fast because
 
 # Important
 This script was developed for the `CRON` task scheduler.
+That means it is really quick finished but doesn't loop every for example 5 minutes.
 
-Install the simple GUI with this command:
+To do this yourself very efficient Install the simple GUI for the `CRON` task scheduler with this command:
 ```
 sudo apt-get install gnome-schedule
 ```
@@ -27,6 +28,8 @@ Then choose your desired time the script should be executed and save everything.
 # But what does it do
 The script checks if the modified time of an FTP file is new (in compariston to the last crawl).
 If yes it downloads the new file and updates the modified date in the *"_time.json"* file.
+
+It does even output what the additions of a text file were (in the console).
 
 # License
 
