@@ -1,11 +1,12 @@
 # FtpFileChangeDetecterPython
-Check your FTP files on changes without even downloading them. Very fast because of only the modified date gets compared in the first place.
+Check your FTP files on changes without even downloading them.
+Very fast because of only the modified date gets compared in the first place.
 
 # Important
 This script was developed for the `CRON` task scheduler.
-That means it is really quick finished but doesn't loop every for example 5 minutes.
+That means it is really quick finished but doesn't loop itself for example every 5 minutes.
 
-To do this yourself very efficient Install the simple GUI for the `CRON` task scheduler with this command:
+To do this [loop] yourself very efficient install the simple GUI for the `CRON` task scheduler with this command:
 ```
 sudo apt-get install gnome-schedule
 ```
@@ -15,11 +16,11 @@ gnome-schedule
 ```
 Now copy all files of this repository on your computer.
 
-* Insert your own FTP credentials in `crredentials_ftp.json`
+* Insert your own FTP credentials in `credentials_ftp.json`
 * Insert your own paths to your FTP files in `watch_these_ftp_files.json`
-* Inser the path where the file `script.py` in `script.py` (at the begin - look into the comments)
+* Inser the path where the file `script.py` is located on your computer in `script.py` (at the begin - look into the comments)
 
-Then create a new `CRON` task over the GUI with the command
+Then create a new `CRON` task over the GUI with the command:
 ```
 python <path to the script.py file>
 ```
