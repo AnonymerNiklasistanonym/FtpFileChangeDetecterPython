@@ -6,7 +6,8 @@ If it's a text file you can even get the new additions.
 
 import json
 import os
-from ftplib import FTP
+import ftplib
+from ftplib import FTP_TLS
 import codecs
 from datetime import datetime
 import difflib
@@ -57,10 +58,31 @@ if not os.path.exists(DIR_OF_DOWNLOADS):
     os.makedirs(DIR_OF_DOWNLOADS)
 
 
-# connect to ftp server:
-ftp = FTP(credentials["host-address"])
-ftp.login(user=credentials["username"], passwd=credentials["password"])
-print("Login to " + credentials["host-address"] + " with " + credentials["username"] + ":")
+# try to connect to ftp server:
+try:
+    print("Login to " + credentials["host-address"] + " with " + credentials["username"] + ":")
+    ftp = FTP_TLS(credentials["host-address"])
+    ftp.login(user=credentials["username"], passwd=credentials["password"])
+# exceptions if the connection cannot be established
+except ftplib.error_reply as e:
+    # Exception raised when an unexpected reply is received from the server.
+    print(e)
+    quit()
+except ftplib.error_temp as e:
+    # Exception raised when an error code signifying a temporary error (response codes in the range 400–499) is received.
+    print(e)
+    quit()
+except ftplib.error_perm as e:
+    # Exception raised when an error code signifying a permanent error (response codes in the range 500–599) is received.
+    print(e)
+    quit()
+except ftplib.error_proto as e:
+    # Exception raised when a reply is received from the server that does not fit the response specifications of the File Transfer Protocol, i.e. begin with a digit in the range 1–5.
+    print(e)
+    quit()
+except ftplib.all_errors as e:
+    print(e)
+    quit()
 
 
 # now download and compare each file in the JSON file
