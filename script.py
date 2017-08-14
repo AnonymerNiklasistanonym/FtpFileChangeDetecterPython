@@ -11,6 +11,7 @@ from ftplib import FTP_TLS
 import codecs
 from datetime import datetime
 import difflib
+import io
 
 
 # Paths for important directories and files - from home directory
@@ -58,8 +59,8 @@ if not os.path.exists(DIR_OF_DOWNLOADS):
     os.makedirs(DIR_OF_DOWNLOADS)
 
 
-# try to connect to ftp server:
 try:
+    # connect to ftp server:
     print("Login to " + credentials["host-address"] + " with " + credentials["username"] + ":")
     ftp = FTP_TLS(credentials["host-address"])
     ftp.login(user=credentials["username"], passwd=credentials["password"])
@@ -69,18 +70,19 @@ except ftplib.error_reply as e:
     print(e)
     quit()
 except ftplib.error_temp as e:
-    # Exception raised when an error code signifying a temporary error (response codes in the range 400–499) is received.
+    # Exception raised when an error code signifying a temporary error (response codes in the range 400 - 499) is received.
     print(e)
     quit()
 except ftplib.error_perm as e:
-    # Exception raised when an error code signifying a permanent error (response codes in the range 500–599) is received.
+    # Exception raised when an error code signifying a permanent error (response codes in the range 500 - 599) is received.
     print(e)
     quit()
 except ftplib.error_proto as e:
-    # Exception raised when a reply is received from the server that does not fit the response specifications of the File Transfer Protocol, i.e. begin with a digit in the range 1–5.
+    # Exception raised when a reply is received from the server that does not fit the response specifications of the File Transfer Protocol, i.e. begin with a digit in the range 1 - 5.
     print(e)
     quit()
 except ftplib.all_errors as e:
+    # Other exceptions.
     print(e)
     quit()
 
@@ -143,8 +145,8 @@ for ftp_file in ftp_files:
         if not os.path.exists(CURRENT_LOCAL_PATH_OLD):
             file = open(CURRENT_LOCAL_PATH_OLD, 'a').close()
 
-        file_new = open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
-        file_old = open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
+        file_new = io.open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
+        file_old = io.open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
 
         # get the difference between the new and old text file
         # thanks to: https://stackoverflow.com/a/15864963/7827128
