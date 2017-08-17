@@ -13,9 +13,10 @@ from datetime import datetime
 import difflib
 import io
 
-# Gmail API - comment and set false if you don't need it
-from SendGmailSimplified.SendGmailSimplified import SimplifiedGmailApi 
-GMAIL_API = True
+# Gmail API - set true if you want to use the SimplifiedGmailApi
+# comment the import if you don't need it
+from SimplifiedGmailApiSubmodule.SendGmailSimplified import SimplifiedGmailApi 
+GMAIL_API = False
 
 # Paths for important directories and files - from home directory
 HOME_DIR = os.path.expanduser('~')
@@ -34,7 +35,7 @@ JSON_TAG_MODIFIED_TIME = "last-modified-time"
 
 if GMAIL_API:
     # Setup the Gmail API - Uncomment the coming 4 lines if you want to use the Simplified Gmail API
-    DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "SimplifiedGmailApi2/gmail_api_files")
+    DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "SimplifiedGmailApiSubmodule/gmail_api_files")
     PATH_OF_CLIENT_DATA = os.path.join(DIR_OF_GMAIL_API_FILES, "client_data.json")
     PATH_OF_CLIENT_SECRET = os.path.join(DIR_OF_GMAIL_API_FILES, "client_secret.json")
     GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
