@@ -1,0 +1,6 @@
+{
+	"email": "yourMailAdresse@gmail.com",
+	"email-name": "Your Name",
+	"application-name": "Previous created service name",
+	"permission-scope": "https://www.googleapis.com/auth/gmail.send"
+}

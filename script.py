@@ -12,6 +12,7 @@ import codecs
 from datetime import datetime
 import difflib
 import io
+from SendGmailSimplified import SimplifiedGmailApi
 
 
 # Paths for important directories and files - from home directory
@@ -27,6 +28,13 @@ DIR_OF_DOWNLOADS = os.path.join(DIR_OF_SCRIPT, "Downloads")
 
 # other things
 JSON_TAG_MODIFIED_TIME = "last-modified-time"
+
+
+# Setup the Gmail API - Uncomment the coming 4 lines if you want to use the Simplified Gmail API
+# DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "gmail_api_files")
+# PATH_OF_CLIENT_DATA = os.path.join(DIR_OF_GMAIL_API_FILES, "client_data.json")
+# PATH_OF_CLIENT_SECRET = os.path.join(DIR_OF_GMAIL_API_FILES, "client_secret.json")
+# GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
 
 
 def save_string_to_json(date_string, file_path):
@@ -70,6 +78,7 @@ except ftplib.error_reply as e:
     print(e)
     quit()
 except ftplib.error_temp as e:
+    # hi
     # Exception raised when an error code signifying a temporary error (response codes in the range 400 - 499) is received.
     print(e)
     quit()
@@ -130,38 +139,54 @@ for ftp_file in ftp_files:
             file_modification_detected = False
 
     # if ftp file is a text file and a change was detected
-    if ftp_file["text-file"] is True and file_modification_detected:
+    if file_modification_detected:
 
-        CURRENT_LOCAL_PATH_NEW = os.path.join(DIR_OF_DOWNLOADS, ftp_file["id"] + "_new" + ".txt")
-        CURRENT_LOCAL_PATH_OLD = os.path.join(DIR_OF_DOWNLOADS, ftp_file["id"] + "_old" + ".txt")
+        if ftp_file["text-file"]:
 
-        # download the file via ftp and save it locally
-        print('Getting ' + ftp_file["path"] + " (id=" + ftp_file["id"] + ")")
-        local_file = open(CURRENT_LOCAL_PATH_NEW, 'wb')
-        ftp.retrbinary('RETR ' + ftp_file["path"], local_file.write, 1024)
-        local_file.close()
+            CURRENT_LOCAL_PATH_NEW = os.path.join(DIR_OF_DOWNLOADS, ftp_file["id"] + "_new" + ".txt")
+            CURRENT_LOCAL_PATH_OLD = os.path.join(DIR_OF_DOWNLOADS, ftp_file["id"] + "_old" + ".txt")
 
-        # create empty old file if no old file exists
-        if not os.path.exists(CURRENT_LOCAL_PATH_OLD):
-            file = open(CURRENT_LOCAL_PATH_OLD, 'a').close()
+            # download the file via ftp and save it locally
+            print('Getting ' + ftp_file["path"] + " (id=" + ftp_file["id"] + ")")
+            local_file = open(CURRENT_LOCAL_PATH_NEW, 'wb')
+            ftp.retrbinary('RETR ' + ftp_file["path"], local_file.write, 1024)
+            local_file.close()
 
-        file_new = io.open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
-        file_old = io.open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
+            # create empty old file if no old file exists
+            if not os.path.exists(CURRENT_LOCAL_PATH_OLD):
+                file = open(CURRENT_LOCAL_PATH_OLD, 'a').close()
 
-        # get the difference between the new and old text file
-        # thanks to: https://stackoverflow.com/a/15864963/7827128
-        diff = difflib.ndiff(file_new.readlines(), file_old.readlines())
-        delta = ''.join("  + " + x[2:] for x in diff if x.startswith('- '))
-        print("Additions to the old file:\n" + delta)
-        file_old.close()
+            file_new = io.open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
+            file_old = io.open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
 
-        # save the new file content to the old file
-        content_new = file_new.readlines()
-        file_new.close()
-        f = codecs.open(CURRENT_LOCAL_PATH_OLD, 'w', "utf-8")
-        # no newline thanks to: https://stackoverflow.com/a/7539151/7827128
-        f.write('\n'.join(content_new))
-        f.close()
+            # get the difference between the new and old text file
+            # thanks to: https://stackoverflow.com/a/15864963/7827128
+            diff = difflib.ndiff(file_new.readlines(), file_old.readlines())
+            delta = ''.join("  + " + x[2:] for x in diff if x.startswith('- '))
+            print("Additions to the old file:\n" + delta)
+            file_old.close()
+
+            # save the new file content to the old file
+            content_new = file_new.readlines()
+            file_new.close()
+            f = codecs.open(CURRENT_LOCAL_PATH_OLD, 'w', "utf-8")
+            # no newline thanks to: https://stackoverflow.com/a/7539151/7827128
+            f.write('\n'.join(content_new))
+            f.close()
+
+            # Gmail API - Uncomment the coming lines (2,4) if you want to use the Simplified Gmail API
+            # Send email:
+            # subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
+            # text = "Additions:\n" + delta + "\n\n(" + new_last_modified_time["last-modified-time"] + ")"
+            # GmailServer.send_plain(credentials["email-if-change"], subject, text)
+
+        else:
+            print("")
+
+            # Gmail API - Uncomment the coming 3 lines if you want to use the Simplified Gmail API
+            # subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
+            # text = "Last modified time: " + new_last_modified_time["last-modified-time"]
+            # GmailServer.send_plain(credentials["email-if-change"], subject, text)
 
 # quit the ftp connection
 ftp.quit()
