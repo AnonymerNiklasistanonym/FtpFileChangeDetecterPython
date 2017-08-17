@@ -1,0 +1,3 @@
+[submodule "SimplifiedGmailApiSubmodule"]
+	path = SimplifiedGmailApiSubmodule
+	url = https://github.com/AnonymerNiklasistanonym/SendGmailSimplified.git
