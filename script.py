@@ -12,7 +12,7 @@ import codecs
 from datetime import datetime
 import difflib
 import io
-from SendGmailSimplified import SimplifiedGmailApi
+from SendGmailSimplified/SendGmailSimplified import SimplifiedGmailApi
 
 
 # Paths for important directories and files - from home directory
@@ -159,25 +159,37 @@ for ftp_file in ftp_files:
             file_new = io.open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
             file_old = io.open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
 
+            content_file_new = file_new.readlines()
+            content_file_old = file_old.readlines()
+            file_old.close()
+            file_new.close()
+
             # get the difference between the new and old text file
             # thanks to: https://stackoverflow.com/a/15864963/7827128
-            diff = difflib.ndiff(file_new.readlines(), file_old.readlines())
-            delta = ''.join("  + " + x[2:] for x in diff if x.startswith('- '))
-            print("Additions to the old file:\n" + delta)
-            file_old.close()
+            # diff = difflib.ndiff(content_file_new, content_file_old)
+            # delta = ''.join("  + " + x[2:] for x in diff if x.startswith('- '))
+            # print("Additions to the old file:\n" + delta)
 
             # save the new file content to the old file
-            content_new = file_new.readlines()
             file_new.close()
             f = codecs.open(CURRENT_LOCAL_PATH_OLD, 'w', "utf-8")
-            # no newline thanks to: https://stackoverflow.com/a/7539151/7827128
-            f.write('\n'.join(content_new))
+            for line in content_file_new:
+                f.write(line)
             f.close()
+
+            email_text = "Differences between the old and new file:\n\n"
+
+            # get the difference between the new and old text file
+            # thanks to: https://stackoverflow.com/a/19128062/7827128
+            print("Differences:")
+            for line in difflib.unified_diff(content_file_old, content_file_new, fromfile='old file', tofile='new file', lineterm='', n=0):
+                print(line.strip("\n"))
+                email_text += line.strip("\n") + "\n"
 
             # Gmail API - Uncomment the coming lines (2,4) if you want to use the Simplified Gmail API
             # Send email:
             # subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
-            # text = "Additions:\n" + delta + "\n\n(" + new_last_modified_time["last-modified-time"] + ")"
+            # text = email_text + "\n\n(" + new_last_modified_time["last-modified-time"] + ")"
             # GmailServer.send_plain(credentials["email-if-change"], subject, text)
 
         else:
