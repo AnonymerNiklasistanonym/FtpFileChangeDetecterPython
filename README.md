@@ -2,6 +2,8 @@
 Check your FTP files on changes without even downloading them.
 Very fast because of only the modified date gets compared in the first place.
 
+
+
 # Important
 This script was developed for the `CRON` task scheduler.
 That means it is really quick finished but doesn't loop itself for example every 5 minutes.
@@ -27,10 +29,23 @@ python <path to the script.py file>
 Then choose your desired time the script should be executed and save everything.
 
 # But what does it do
+
 The script checks if the modified time of an FTP file is new (in compariston to the last crawl).
 If yes it downloads the new file and updates the modified date in the *"_time.json"* file.
 
 It does even output what the additions of a text file were (in the console).
+
+# How to use the SimplifiedGmailApi?
+
+You can use the `SimplifiedGmailApi` by setting `GMAIL_API = True` at the start of the main script.
+
+If you download the repository and the submodule folder isn't there enter this:
+
+```
+$ git submodule update --init --recursive
+```
+
+After that you get the original API copied and then you can use it.
 
 # License
 
