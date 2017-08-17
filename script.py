@@ -12,8 +12,10 @@ import codecs
 from datetime import datetime
 import difflib
 import io
-from SendGmailSimplified/SendGmailSimplified import SimplifiedGmailApi
 
+# Gmail API - comment and set false if you don't need it
+from SendGmailSimplified.SendGmailSimplified import SimplifiedGmailApi 
+GMAIL_API = True
 
 # Paths for important directories and files - from home directory
 HOME_DIR = os.path.expanduser('~')
@@ -30,11 +32,12 @@ DIR_OF_DOWNLOADS = os.path.join(DIR_OF_SCRIPT, "Downloads")
 JSON_TAG_MODIFIED_TIME = "last-modified-time"
 
 
-# Setup the Gmail API - Uncomment the coming 4 lines if you want to use the Simplified Gmail API
-# DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "gmail_api_files")
-# PATH_OF_CLIENT_DATA = os.path.join(DIR_OF_GMAIL_API_FILES, "client_data.json")
-# PATH_OF_CLIENT_SECRET = os.path.join(DIR_OF_GMAIL_API_FILES, "client_secret.json")
-# GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
+if GMAIL_API:
+    # Setup the Gmail API - Uncomment the coming 4 lines if you want to use the Simplified Gmail API
+    DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "SimplifiedGmailApi2/gmail_api_files")
+    PATH_OF_CLIENT_DATA = os.path.join(DIR_OF_GMAIL_API_FILES, "client_data.json")
+    PATH_OF_CLIENT_SECRET = os.path.join(DIR_OF_GMAIL_API_FILES, "client_secret.json")
+    GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
 
 
 def save_string_to_json(date_string, file_path):
@@ -186,19 +189,22 @@ for ftp_file in ftp_files:
                 print(line.strip("\n"))
                 email_text += line.strip("\n") + "\n"
 
-            # Gmail API - Uncomment the coming lines (2,4) if you want to use the Simplified Gmail API
-            # Send email:
-            # subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
-            # text = email_text + "\n\n(" + new_last_modified_time["last-modified-time"] + ")"
-            # GmailServer.send_plain(credentials["email-if-change"], subject, text)
+            if GMAIL_API:
+                # Gmail API - Uncomment the coming lines (2,4) if you want to use the Simplified Gmail API
+                # Send email:
+                subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
+                text = email_text + "\n\n(" + new_last_modified_time["last-modified-time"] + ")"
+                GmailServer.send_plain(credentials["email-if-change"], subject, text)
 
         else:
             print("")
 
-            # Gmail API - Uncomment the coming 3 lines if you want to use the Simplified Gmail API
-            # subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
-            # text = "Last modified time: " + new_last_modified_time["last-modified-time"]
-            # GmailServer.send_plain(credentials["email-if-change"], subject, text)
+            if GMAIL_API:
+                # Gmail API - Uncomment the coming 3 lines if you want to use the Simplified Gmail API
+                # Send email:
+                subject = "Change of the file " + ftp_file["id"] + " (" + ftp_file["path"] + ")"
+                text = "Last modified time: " + new_last_modified_time["last-modified-time"]
+                GmailServer.send_plain(credentials["email-if-change"], subject, text)
 
 # quit the ftp connection
 ftp.quit()
