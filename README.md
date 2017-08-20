@@ -2,6 +2,10 @@
 Check your FTP files on changes without even downloading them.
 Very fast because of only the modified date gets compared in the first place.
 
+**Virtual environment:** [How to setup and use `virtualenv` to run this script](VIRTUALENV.md)
+
+**GIT submodule:** [How to update, setup and use the SimplifiedGmailApi submodule](SUBMODULE_INSTRUCTIONS.md)
+
 
 
 # Important
