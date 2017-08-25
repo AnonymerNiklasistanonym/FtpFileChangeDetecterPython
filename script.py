@@ -181,36 +181,30 @@ for ftp_file in ftp_files:
             if not os.path.exists(CURRENT_LOCAL_PATH_OLD):
                 file = open(CURRENT_LOCAL_PATH_OLD, 'a').close()
 
+            # read new and old file
             file_new = io.open(CURRENT_LOCAL_PATH_NEW, 'r', encoding='utf-8')
             file_old = io.open(CURRENT_LOCAL_PATH_OLD, 'r', encoding='utf-8')
-
             content_file_new = file_new.readlines()
             content_file_old = file_old.readlines()
             file_old.close()
             file_new.close()
 
-            # get the difference between the new and old text file
-            # thanks to: https://stackoverflow.com/a/15864963/7827128
-            # diff = difflib.ndiff(content_file_new, content_file_old)
-            # delta = ''.join("  + " + x[2:] for x in diff if x.startswith('- '))
-            # print("Additions to the old file:\n" + delta)
-
             # save the new file content to the old file
-            file_new.close()
             f = codecs.open(CURRENT_LOCAL_PATH_OLD, 'w', "utf-8")
             for line in content_file_new:
                 f.write(line)
             f.close()
 
-            email_text = "Differences between the old and new file:\n\n"
-
             # get the difference between the new and old text file
             # thanks to: https://stackoverflow.com/a/19128062/7827128
             print("Differences:")
+            email_text = "Differences between the old and new file:\n\n"
             for line in difflib.unified_diff(content_file_old, content_file_new, fromfile='old file', tofile='new file', lineterm='', n=0):
                 print(line.strip("\n"))
                 email_text += line.strip("\n") + "\n"
 
+            # try the following - if Gmail Api was activated and a failure while sending the file happens
+            # send a email with only the change of the file as a fallback.
             try:
                 if GMAIL_API:
                     # Gmail API - Uncomment the coming lines (2,4) if you want to use the Simplified Gmail API
