@@ -39,11 +39,15 @@ logging.basicConfig(filename=os.path.join(DIR_OF_SCRIPT, "script.log"), level=lo
 
 
 if GMAIL_API:
-    # Setup the Gmail API - Uncomment the coming 4 lines if you want to use the Simplified Gmail API
     DIR_OF_GMAIL_API_FILES = os.path.join(DIR_OF_SCRIPT, "SimplifiedGmailApiSubmodule/gmail_api_files")
     PATH_OF_CLIENT_DATA = os.path.join(DIR_OF_GMAIL_API_FILES, "client_data.json")
     PATH_OF_CLIENT_SECRET = os.path.join(DIR_OF_GMAIL_API_FILES, "client_secret.json")
-    GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
+    GmailServer = None
+else:
+    DIR_OF_GMAIL_API_FILES = None
+    PATH_OF_CLIENT_DATA = None
+    PATH_OF_CLIENT_SECRET = None
+    GmailServer = None
 
 
 def save_string_to_json(date_string, file_path):
@@ -163,6 +167,10 @@ for ftp_file in ftp_files:
 
     # if ftp file is a text file and a change was detected
     if file_modification_detected:
+
+        if GmailServer is None and GMAIL_API:
+            # create the email server only if a file modification was spotted
+            GmailServer = SimplifiedGmailApi(PATH_OF_CLIENT_DATA, PATH_OF_CLIENT_SECRET, DIR_OF_GMAIL_API_FILES)
 
         if ftp_file["text-file"]:
 
